@@ -1,0 +1,18 @@
+#div1 {
+	width: 900px;
+	height: 600px; 
+	position: relative;
+	background-color: #333366;
+}
+
+#div2 {
+	position: absolute;
+	top: 300px;
+	left: 450px;
+	-webkit-transform: scale(1);
+	-webkit-transition: 0.3s;
+}
+
+img {
+	position: absolute;
+}
