@@ -16,6 +16,8 @@
         var div1Height = 600;
        
         var div1 = d3.select("#div1");
+        var div2 = div1.append("div")
+                       .attr("id", "div2");
      
         var sampleImages = [ 
                         {
@@ -151,38 +153,39 @@
             bBoxXCentroid = topLeft[0] + bBoxWidth/2;
             bBoxYCentroid = topLeft[1] + bBoxHeight/2;
             
-            var div2 = div1.append("div")
-                           .attr("id", "div2");
+           
                         
-            var image = div2.selectAll("image")
-                         .data(data, function(d){return d.url;});
+            var image = div2.selectAll("img")
+                            .data(data, function(d){return d.url;});
             
             image.enter()
-                 .append("image")
-                 .style({"left" : function(d){return d.x;},
-                         "top" : function(d){return d.y;},
-                         "src" : function(d){return d.url;},
-                         "width", function(d){return d.width;},
-                         "height", function(d){return d.height;}
+                 .append("img")
+                 .attr("src", function(d){return d.url;})
+                 .style({"left" : function(d){return d.x + "px";},
+                         "top" : function(d){return d.y + "px";},
+                         "width" : function(d){return d.width + "px";},
+                         "height" : function(d){return d.height + "px";}
                        });
 
-            image.style({"left" : function(d){return d.x;},
-                         "top" : function(d){return d.y;},
-                         "width", function(d){return d.width;},
-                         "height", function(d){return d.height;}
+            image.style({"left" : function(d){return d.x + "px";},
+                         "top" : function(d){return d.y + "px";},
+                         "width" : function(d){return d.width + "px";},
+                         "height" : function(d){return d.height + "px";}
                        });
 
-            gAspect = svgWidth/svgHeight;
+            image.exit()
+                 .remove();
+
+            div1Aspect = div1Width/div1Height;
             bBoxAspect = bBoxWidth/bBoxHeight;
                         
-            div2
-                .attr("transform", function(){
-                    if(bBoxAspect < gAspect){
-                        var scale1 = svgHeight/bBoxHeight;
-                        return "scale(" + scale1 + ")";
+            div2.style("-webkit-transform", function(){
+                    if(bBoxAspect < div1Aspect){
+                        var scale1 = (div1Height/bBoxHeight)*((bBoxHeight-10)/bBoxHeight);
+                        return "translate(" + -scale1*bBoxXCentroid + "px," + -scale1*bBoxYCentroid + "px)" + " scale(" + scale1 + ")";
                     } else {
-                        var scale2 = svgWidth/bBoxWidth;
-                        return "scale(" + scale2 + ")";
+                        var scale2 = (div1Width/bBoxWidth)*((bBoxWidth-10)/bBoxWidth);
+                        return "translate(" + -scale2*bBoxXCentroid + "px," + -scale2*bBoxYCentroid + "px)" + " scale(" + scale2 + ")";
                     }
                   });
               
@@ -197,6 +200,7 @@
             if(random < 0 || random > sampleImages.length){
                 random = Math.floor(Math.random()*sampleImages.length);
             }
+            return sampleImages[random];
         }
         
         function sendEventHistory(){
