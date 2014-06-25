@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Image Tiles</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src=""C:\Users\SethA\Desktop\image display\public_html\js\libs\d3\d3.js""></script>
+        <script src=""C:\Users\SethA\Desktop\image display\public_html\layout.js""></script>
+    </head>
+    <body>      
+        <script>
+        var svgWidth = 900;
+        var svgHeight = 600;
+       
+        var svg =  d3.select("body")
+                     .append("svg")
+                     .attr("width", svgWidth)
+                     .attr("height", svgHeight)
+                     .style("background-color", "pink")
+                     .append("g")
+                     .attr("width", svgWidth)
+                     .attr("height", svgHeight);
+     
+        var sampleImages = [ 
+                        {
+                         url: "http://upload.wikimedia.org/wikipedia/commons/3/31/Made20bacon.png",
+                         height:382,
+                         width:698
+                        },
+                        
+                        {
+                         url: "http://sr.photos2.fotosearch.com/bthumb/FSC/FSC094/x18912142.jpg",
+                         height:170,
+                         width:170
+                        },
+                        
+                        {
+                         url: "http://investorplace.com/wp-content/uploads/2014/02/bacon.jpg",
+                         height:900,
+                         width:1600
+                        },
+                        
+                        {
+                         url: "http://www.baconsocial.com/wp-content/uploads/2012/09/bacon-1-940x460.jpg",
+                         height:368,
+                         width:752
+                        },
+                        
+                        {
+                         url: "http://www.hasslefreeclipart.com/clipart_food/breakfast/bacon.gif",
+                         height:267,
+                         width:358
+                        },
+                        
+                        {
+                         url: "http://ec.l.thumbs.canstockphoto.com/canstock14029099.jpg",
+                         height:150,
+                         width:102
+                        },
+                        
+                        {
+                         url: "http://workout-lifestyle.com/wp-content/uploads/2014/01/improvKitchen_howToCookBacon_00.jpg",
+                         height:1600,
+                         width:1600
+                        },
+                        
+                        {
+                         url: "http://www.mompopculture.com/wp-content/uploads/2014/03/bacon.jpg",
+                         height:432,
+                         width:540
+                        },
+                        
+                        {
+                         url: "http://static.centercutcook.com/wp-content/uploads/2013/10/bacon-wrapped-little-smokies-3.jpg",
+                         height:600,
+                         width:500
+                        },
+                        
+                        {
+                         url: "http://beatricelevinsonnaturopath.com/wp-content/uploads/2013/05/bacon.jpg",
+                         height:518,
+                         width:778
+                        },
+                        
+                        {
+                         url: "http://www.bisonbasics.com/recipes/ground_bison/images/draining_cooked_bacon_330.jpg",
+                         height:248,
+                         width:330
+                        },
+                       
+                        {
+                         url: "http://umd.spoonuniversity.com/wp-content/uploads/sites/19/2014/02/BaconStrips.jpg",
+                         height:667,
+                         width:1000
+                        },
+                        
+                        {
+                         url: "http://cdn.foodbeast.com.s3.amazonaws.com/content/uploads/2014/03/Ritz-Bacon-Crackers.jpg",
+                         height:350,
+                         width:600
+                        },
+                        
+                        {
+                         url: "http://reciperhapsody.files.wordpress.com/2011/11/baked-bacon.jpg",
+                         height:1980,
+                         width:2640
+                        },
+                        
+                        {
+                         url: "http://ccobb.wonecks.net/files/2013/05/Bacon-1seqq07.jpg",
+                         height:1600,
+                         width:1593
+                        }
+                    ];
+        
+        for(var i = 0; i < 6; i++){
+            for(var j = 0; j < 15; j++){
+                sampleImages.push({
+                    url: sampleImages[j].url,
+                    width: sampleImages[j].width,
+                    height: sampleImages[j].height
+                });
+            }
+        }
+        
+        for(var i = 15; i < sampleImages.length; i++){
+            sampleImages[i].url += "?" + i;
+        }
+        
+        var eventHistory = [];
+        
+        var inter = setInterval(function() {
+            var ranPic = randomPicture();
+            ranPic["time"] = Date.now();
+            eventHistory.push(ranPic);
+        }, 10);
+     
+        var myWorker = new Worker("layout.js");
+        sendEventHistory();
+        myWorker.addEventListener("message", function(event){updateBody(event)}, false);
+        
+        function updateBody(event){
+            var layoutResults = event.data.layoutResults;
+            if(layoutResults === null)
+                setTimeout(function(){
+                    sendEventHistory();
+                }, 1000);
+            var data = layoutResults[0];
+            bBoxCoords = layoutResults[1];
+            topLeft = bBoxCoords.slice(0,2);
+            bottomRight = bBoxCoords.slice(2,4);
+            
+            bBoxWidth = bottomRight[0] - topLeft[0];
+            bBoxHeight = bottomRight[1] - topLeft[1];
+            bBoxXCentroid = topLeft[0] + bBoxWidth/2;
+            bBoxYCentroid = topLeft[1] + bBoxHeight/2;
+            
+            var g = d3.select("g");
+                        
+            var image = g.selectAll("image")
+                         .data(data, function(d){return d.url;});
+            
+            image.enter()
+                 .append("image")
+                 .attr("x", function(d){return d.x;})
+                 .attr("y", function(d){return d.y;})
+                 .attr("xlink:href", function(d){return d.url;})
+                 .attr("width", function(d){return d.width;})
+                 .attr("height", function(d){return d.height;});
+
+            image.transition()
+                 .duration(500)
+                 .attr("x", function(d){return d.x;})
+                 .attr("y", function(d){return d.y;})
+                 .attr("width", function(d){return d.width;})
+                 .attr("height", function(d){return d.height;});
+
+            gAspect = svgWidth/svgHeight;
+            bBoxAspect = bBoxWidth/bBoxHeight;
+                        
+            g.transition()
+             .duration(500) 
+             .attr("transform", function(){
+                if(bBoxAspect < gAspect){
+                    var scale1 = svgHeight/bBoxHeight;
+                    return "translate(" + (svgWidth/2-scale1*bBoxXCentroid) + "," + (svgHeight/2-scale1*bBoxYCentroid) + ")" + " scale(" + scale1 + ")";
+                } else {
+                    var scale2 = svgWidth/bBoxWidth;
+                    return "translate(" + (svgWidth/2-scale2*bBoxXCentroid) + "," + (svgHeight/2-scale2*bBoxYCentroid) + ")" + " scale(" + scale2 + ")";
+                }
+              });
+              
+            setTimeout(function(){
+                sendEventHistory();
+            }, 1000);
+        };
+        
+        function randomPicture(){
+            
+            var random = Math.floor(d3.random.normal(sampleImages.length/2, 5)());
+            if(random < 0 || random > sampleImages.length){
+                random = Math.floor(Math.random()*sampleImages.length);
+            }
+        }
+        
+        function sendEventHistory(){
+            myWorker.postMessage({"eventHistory": eventHistory});
+        };
+        </script>
+    </body>
+</html>
