@@ -1,4 +1,4 @@
-<!DOCTYPE html> adsads
+<!DOCTYPE html> 
 <html> 
     <head>
         <title>Image Tiles</title>
@@ -6,20 +6,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src=""C:\Users\SethA\Desktop\image display\public_html\js\libs\d3\d3.js""></script>
         <script src=""C:\Users\SethA\Desktop\image display\public_html\layout.js""></script>
+        <link href = "C:\Users\SethA\Desktop\css image display\stylesheet.css" rel="stylesheet" type="text/css">
     </head>
     <body>      
+        <div id="div1"> </div>
+        
         <script>
-        var svgWidth = 900;
-        var svgHeight = 600;
+        var div1Width = 900;
+        var div1Height = 600;
        
-        var svg =  d3.select("body")
-                     .append("svg")
-                     .attr("width", svgWidth)
-                     .attr("height", svgHeight)
-                     .style("background-color", "pink")
-                     .append("g")
-                     .attr("width", svgWidth)
-                     .attr("height", svgHeight);
+        var div1 =  d3.select("#div1");
      
         var sampleImages = [ 
                         {
@@ -155,40 +151,40 @@
             bBoxXCentroid = topLeft[0] + bBoxWidth/2;
             bBoxYCentroid = topLeft[1] + bBoxHeight/2;
             
-            var g = d3.select("g");
+            var div2 = div1.append("div")
+                           .attr("id", "div2");
                         
-            var image = g.selectAll("image")
+            var image = div2.selectAll("image")
                          .data(data, function(d){return d.url;});
             
             image.enter()
                  .append("image")
-                 .attr("x", function(d){return d.x;})
-                 .attr("y", function(d){return d.y;})
-                 .attr("xlink:href", function(d){return d.url;})
-                 .attr("width", function(d){return d.width;})
-                 .attr("height", function(d){return d.height;});
+                 .style({"left" : function(d){return d.x;},
+                         "top" : function(d){return d.y;},
+                         "src" : function(d){return d.url;},
+                         "width", function(d){return d.width;},
+                         "height", function(d){return d.height;}
+                       });
 
-            image.transition()
-                 .duration(500)
-                 .attr("x", function(d){return d.x;})
-                 .attr("y", function(d){return d.y;})
-                 .attr("width", function(d){return d.width;})
-                 .attr("height", function(d){return d.height;});
+            image..style({"left" : function(d){return d.x;},
+                         "top" : function(d){return d.y;},
+                         "width", function(d){return d.width;},
+                         "height", function(d){return d.height;}
+                       });
 
             gAspect = svgWidth/svgHeight;
             bBoxAspect = bBoxWidth/bBoxHeight;
                         
-            g.transition()
-             .duration(500) 
-             .attr("transform", function(){
-                if(bBoxAspect < gAspect){
-                    var scale1 = svgHeight/bBoxHeight;
-                    return "translate(" + (svgWidth/2-scale1*bBoxXCentroid) + "," + (svgHeight/2-scale1*bBoxYCentroid) + ")" + " scale(" + scale1 + ")";
-                } else {
-                    var scale2 = svgWidth/bBoxWidth;
-                    return "translate(" + (svgWidth/2-scale2*bBoxXCentroid) + "," + (svgHeight/2-scale2*bBoxYCentroid) + ")" + " scale(" + scale2 + ")";
-                }
-              });
+            div2
+                .attr("transform", function(){
+                    if(bBoxAspect < gAspect){
+                        var scale1 = svgHeight/bBoxHeight;
+                        return "scale(" + scale1 + ")";
+                    } else {
+                        var scale2 = svgWidth/bBoxWidth;
+                        return "scale(" + scale2 + ")";
+                    }
+                  });
               
             setTimeout(function(){
                 sendEventHistory();
