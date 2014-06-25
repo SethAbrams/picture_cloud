@@ -4,7 +4,7 @@
         <title>Image Tiles</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="C:\Users\SethA\Desktop\image display\public_html\js\libs\d3\d3.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js"></script>
         <script src="https://github.com/SethAbrams/picture_cloud/blob/master/layout.js"></script>
         <link href = "https://github.com/SethAbrams/picture_cloud/blob/master/stylesheet.css" rel="stylesheet" type="text/css">
     </head>
@@ -15,7 +15,7 @@
         var div1Width = 900;
         var div1Height = 600;
        
-        var div1 =  d3.select("#div1");
+        var div1 = d3.select("#div1");
      
         var sampleImages = [ 
                         {
@@ -166,7 +166,7 @@
                          "height", function(d){return d.height;}
                        });
 
-            image..style({"left" : function(d){return d.x;},
+            image.style({"left" : function(d){return d.x;},
                          "top" : function(d){return d.y;},
                          "width", function(d){return d.width;},
                          "height", function(d){return d.height;}
