@@ -20,6 +20,5 @@ img {
 a {
 	position: absolute;
 	display: block;
-	target-new: tab ! important;
 	-webkit-transition: 0.4s;
 }
