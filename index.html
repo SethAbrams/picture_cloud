@@ -188,7 +188,7 @@
 
             div1Aspect = div1Width/div1Height;
             bBoxAspect = bBoxWidth/bBoxHeight;
-            var bBoxPadding = 10; //adds ten pixels of padding on each side of the longer dimension of the bounding box                        
+            var bBoxPadding = 10; //adds x/2 pixels of padding on each side of the longer dimension of the bounding box                        
             div2.style("-webkit-transform", function(){
                     if(bBoxAspect < div1Aspect){
                         var scale1 = (div1Height/bBoxHeight)*((bBoxHeight-bBoxPadding)/bBoxHeight);
