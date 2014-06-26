@@ -12,7 +12,8 @@
         <div id="div1"> </div>
         
         <script>
-        var div1Width = 900;
+        var div1Width = 900; //when changing these two values, 
+                            //be sure to change them in the layout as //well
         var div1Height = 600;
        
         var div1 = d3.select("#div1");
@@ -135,18 +136,19 @@
      
         var myWorker = new Worker("layout.js");
         
-        //setTimeout(function(){
-            sendEventHistory();
-        //}, 10);
-
+        sendEventHistory();
+            
         myWorker.addEventListener("message", function(event){updateBody(event)}, false);
         
         function updateBody(event){
             var layoutResults = event.data.layoutResults;
-            if(layoutResults === null)
+            if(layoutResults === null) {
                 setTimeout(function(){
                     sendEventHistory();
                 }, 1000);
+                return;
+            }
+
             var data = layoutResults[0];
             bBoxCoords = layoutResults[1];
             topLeft = bBoxCoords.slice(0,2);
@@ -186,13 +188,13 @@
 
             div1Aspect = div1Width/div1Height;
             bBoxAspect = bBoxWidth/bBoxHeight;
-                        
+            var bBoxPadding = 10; //adds ten pixels of padding on each side of the longer dimension of the bounding box                        
             div2.style("-webkit-transform", function(){
                     if(bBoxAspect < div1Aspect){
-                        var scale1 = (div1Height/bBoxHeight)*((bBoxHeight-10)/bBoxHeight);
+                        var scale1 = (div1Height/bBoxHeight)*((bBoxHeight-bBoxPadding)/bBoxHeight);
                         return "translate(" + -scale1*bBoxXCentroid + "px," + -scale1*bBoxYCentroid + "px)" + " scale(" + scale1 + ")";
                     } else {
-                        var scale2 = (div1Width/bBoxWidth)*((bBoxWidth-10)/bBoxWidth);
+                        var scale2 = (div1Width/bBoxWidth)*((bBoxWidth-bBoxPadding)/bBoxWidth);
                         return "translate(" + -scale2*bBoxXCentroid + "px," + -scale2*bBoxYCentroid + "px)" + " scale(" + scale2 + ")";
                     }
                   });

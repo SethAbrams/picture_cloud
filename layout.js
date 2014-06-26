@@ -2,7 +2,9 @@ var maxCount;
 var minCount;
 var maxDim = 180;
 var uniqueData;
-                                       
+var div1Width = 900;
+var div1Height = 600;                
+
 self.addEventListener("message", function(event){layout(event)}, false);
 
 function layout(event){
@@ -12,8 +14,10 @@ function layout(event){
     minCount = 0;
     var data = event.data.eventHistory;
     
-    if(data.length === 0)
+    if(data.length === 0) {
         self.postMessage({"layoutResults":null});
+        return;
+    }
     
     data = cutDown(data);
     
@@ -42,7 +46,12 @@ function layout(event){
     }
     
     uniqueData.sort(function (a,b){return b.count - a.count;});
-    maxCount = uniqueData[0].count;
+    try { 
+        maxCount = uniqueData[0].count;
+    } catch(error) {
+        console.log(data.length);
+        console.log(uniqueData);
+    }
     minCount = uniqueData[uniqueData.length - 1].count;
     uniqueData = normalizeDimensions(uniqueData);
     uniqueData[0].x = -uniqueData[0].width/2;
@@ -146,5 +155,5 @@ var isHitting = function(index){
 };
 
  var spiral = function(t) {
-    return [(900/600)*t*Math.cos(t), t*Math.sin(t)];
+    return [(div1Width/div1Height)*t*Math.cos(t), t*Math.sin(t)];
 };
