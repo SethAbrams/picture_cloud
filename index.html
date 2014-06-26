@@ -134,7 +134,11 @@
         }, 10);
      
         var myWorker = new Worker("layout.js");
-        sendEventHistory();
+        
+        //setTimeout(function(){
+            sendEventHistory();
+        //}, 10);
+
         myWorker.addEventListener("message", function(event){updateBody(event)}, false);
         
         function updateBody(event){
@@ -155,26 +159,30 @@
             
            
                         
-            var image = div2.selectAll("img")
+            var anchor = div2.selectAll("a")
                             .data(data, function(d){return d.url;});
             
-            image.enter()
-                 .append("img")
-                 .attr("src", function(d){return d.url;})
+            anchor.enter()
+                 .append("a")
+                 .attr("href", function(d){return d.url;})
+                 .attr("target", "_blank")
                  .style({"left" : function(d){return d.x + "px";},
+                        "top" : function(d){return d.y + "px";},
+                        "width" : function(d){return d.width + "px";},
+                        "height" : function(d){return d.height + "px";}
+                       })
+                 .append("img")
+                 .attr("src", function(d){return d.url;});
+                
+
+            anchor.style({"left" : function(d){return d.x + "px";},
                          "top" : function(d){return d.y + "px";},
                          "width" : function(d){return d.width + "px";},
                          "height" : function(d){return d.height + "px";}
                        });
 
-            image.style({"left" : function(d){return d.x + "px";},
-                         "top" : function(d){return d.y + "px";},
-                         "width" : function(d){return d.width + "px";},
-                         "height" : function(d){return d.height + "px";}
-                       });
-
-            image.exit()
-                 .remove();
+            anchor.exit()
+                  .remove();
 
             div1Aspect = div1Width/div1Height;
             bBoxAspect = bBoxWidth/bBoxHeight;
