@@ -46,12 +46,7 @@ function layout(event){
     }
     
     uniqueData.sort(function (a,b){return b.count - a.count;});
-    try { 
-        maxCount = uniqueData[0].count;
-    } catch(error) {
-        console.log(data.length);
-        console.log(uniqueData);
-    }
+    maxCount = uniqueData[0].count;
     minCount = uniqueData[uniqueData.length - 1].count;
     uniqueData = normalizeDimensions(uniqueData);
     uniqueData[0].x = -uniqueData[0].width/2;
@@ -61,7 +56,7 @@ function layout(event){
     var x2 = uniqueData[0].x + uniqueData[0].width;
     var y2 = uniqueData[0].y + uniqueData[0].height;
     var step = Math.PI/1000;
-    
+    console.log(uniqueData.length);
     
     for(var i = 1; i < uniqueData.length; i++){
         uniqueData[i].x = -uniqueData[i].width/2;

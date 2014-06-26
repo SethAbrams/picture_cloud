@@ -206,7 +206,7 @@
         
         function randomPicture(){
             
-            var random = Math.floor(d3.random.normal(sampleImages.length/2, 5)());
+            var random = Math.floor(d3.random.normal(sampleImages.length/2, 15)());
             if(random < 0 || random > sampleImages.length){
                 random = Math.floor(Math.random()*sampleImages.length);
             }
