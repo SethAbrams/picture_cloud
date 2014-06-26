@@ -56,7 +56,6 @@ function layout(event){
     var x2 = uniqueData[0].x + uniqueData[0].width;
     var y2 = uniqueData[0].y + uniqueData[0].height;
     var step = Math.PI/1000;
-    console.log(uniqueData.length);
     
     for(var i = 1; i < uniqueData.length; i++){
         uniqueData[i].x = -uniqueData[i].width/2;
